@@ -15,7 +15,7 @@ function Login() {
     event.preventDefault();
     try {
       const data = await loginAPI({ email, password });
-      // Save token or user info as needed
+      //  token?
       alert('Login successful!');
     } catch (error) {
       alert('Login failed!');
