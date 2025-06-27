@@ -29,8 +29,8 @@ const handleLogin = (event) => {
             <Typography 
                 component="h1"
                 variant="h5"
-                align="center" // Center the text
-                sx={{ width: '100%' }} // Ensure it takes full width for centering
+                align="center" 
+                sx={{ width: '100%' }} 
                 >            
                 Welcome to the Pickup Game App! <br /> 
                 Login
