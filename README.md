@@ -56,6 +56,15 @@ Axios: For making HTTP requests to your backend login endpoint.
 Material-UI (MUI) 
 - run in terminal, npm install @mui/material @emotion/react @emotion/styled
 
+6. Django Installation
+   - (mac) pip instal Django
+   - may need to add a requirements.txt file -> "pip install -r requirements.txt"
+
+7. TO RUN
+   - move into to backend folder and run "python manage.py runserver"
+   - move back one, then move into front end folder and run "npm start" (or "npm run dev")
+   - browser will open and begin interacting! 
+
 Use React Hook Form + Yup for the login form and validation.
 Use Axios to send login data to your Django backend.
 Store the JWT token in localStorage or cookies after a successful login.
