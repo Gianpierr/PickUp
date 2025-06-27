@@ -31,9 +31,8 @@ pickup-frontend/
 ├── package.json
 └── README.md
 
-**MOVE TO pickup_frontend DIRECTORY TO INSTALL**
-
 1. Using Node.js and React Router for routing
+   **MOVE TO pickup_frontend DIRECTORY TO INSTALL**
 - install npm "install npm", reference pickup_frontend/README.md
 - install react router, using "npm install react-router-dom"
         *Benefits of using React Router:
@@ -64,6 +63,8 @@ Material-UI (MUI)
    - move into to backend folder and run "python manage.py runserver"
    - move back one, then move into front end folder and run "npm start" (or "npm run dev")
    - browser will open and begin interacting! 
+
+
 
 Use React Hook Form + Yup for the login form and validation.
 Use Axios to send login data to your Django backend.
