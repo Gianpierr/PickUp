@@ -3,13 +3,23 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import MuiLink from '@mui/material/Link';
 import sportsBg from '../assets/sports-bg.jpg';
+import { loginAPI } from '../api/loginAPI';
+
 
 
 function Login() {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
-const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    console.log("Login button clicked");
+    try {
+      const data = await loginAPI({ email, password });
+      //  token?
+      alert('Login successful!');
+    } catch (error) {
+      alert('Login failed!');
+    }
   };
 
   return (
@@ -36,8 +46,28 @@ const handleLogin = (event) => {
                 Login
             </Typography>
             <Box component="form" sx={{ mt: 1 }} onSubmit={handleLogin}>
-            <TextField margin="normal" required fullWidth label="Email Address" name="email" autoComplete="email" autoFocus />
-            <TextField margin="normal" required fullWidth name="password" label="Password" type="password" autoComplete="current-password" />
+            <TextField 
+              margin="normal" 
+              required 
+              fullWidth 
+              label="Email Address" 
+              name="email" 
+              autoComplete="email" 
+              autoFocus 
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+            <TextField 
+              margin="normal" 
+              required 
+              fullWidth 
+              name="password" 
+              label="Password" 
+              type="password" 
+              autoComplete="current-password" 
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
                 Sign In
             </Button>
