@@ -13,6 +13,7 @@ router.register(r'games', GameViewSet)
 router.register(r'participations', ParticipationViewSet)
 
 urlpatterns = [
+    path('users/', UsersView.as_view(),  name='users')
     path('signup/', SignupView.as_view(), name='signup'),
     path('', include(router.urls)),
 ]

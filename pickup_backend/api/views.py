@@ -28,3 +28,5 @@ class GameViewSet(viewsets.ModelViewSet):
 class ParticipationViewSet(viewsets.ModelViewSet):
     queryset = Participation.objects.all()
     serializer_class = ParticipationSerializer
+
+class Users()
