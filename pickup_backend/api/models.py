@@ -28,5 +28,8 @@ class Participation(models.Model):
 class Player(models.Model):
     username = models.CharField()
 
+    def __str__(self):
+        return f'{self.username}'
+
 
 
