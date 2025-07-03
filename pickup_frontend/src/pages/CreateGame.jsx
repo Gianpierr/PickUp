@@ -19,7 +19,7 @@ function CreateGame() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Backend Stuff
-    alert('Game Created!');
+    console.log("Tech Exercise Pt.4");
   };
 
  return (
