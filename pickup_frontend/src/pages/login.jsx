@@ -16,7 +16,7 @@ function Login() {
     try {
       const data = await loginAPI({ username, password });
       //  token?
-      alert('Login successful!');
+      alert('Yay, Login successful!');
     } catch (error) {
       alert('Login failed!');
     }
