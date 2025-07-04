@@ -25,3 +25,28 @@ class ParticipationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Participation
         fields = '__all__'
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """ Serializer for User model """
+    full_name = serializers.SerializerMethodField() #figure out what this does
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "email", 
+            "first_name", 
+            "last_name",
+            "full_name",
+            "email",
+            "is_staff",
+            "is_active",
+            "date_joined",
+            "last_login"
+        ]
+        
+
+       
+
+
