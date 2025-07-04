@@ -8,13 +8,13 @@ import { loginAPI } from '../api/loginAPI';
 
 
 function Login() {
-  const [email, setEmail] = React.useState('');
+  const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const data = await loginAPI({ email, password });
+      const data = await loginAPI({ username, password });
       //  token?
       alert('Login successful!');
     } catch (error) {
@@ -50,12 +50,12 @@ function Login() {
               margin="normal" 
               required 
               fullWidth 
-              label="Email Address" 
-              name="email" 
-              autoComplete="email" 
+              label="Username" 
+              name="username" 
+              autoComplete="username" 
               autoFocus 
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={username}
+              onChange={e => setUsername(e.target.value)}
             />
             <TextField 
               margin="normal" 
