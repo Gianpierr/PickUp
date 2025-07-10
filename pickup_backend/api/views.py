@@ -33,42 +33,22 @@ class ParticipationViewSet(viewsets.ModelViewSet):
     serializer_class = ParticipationSerializer
 
 
+
+
 class UserViewSet(viewsets.ModelViewSet):
+    """ User view set for listing and retrieving users """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    lookup_field="username"
-
-    @action(detail=True, methods=['get'])
-    def profile(self, request, pk=None):
-        """ Custom profile endpoint: GET /"""
-        user = self.get_object()
-    def retrieve(self, request, pk=None):
-        return super().retrieve(request, pk)
-    
-    def create(self, request, pk=None):
-        pass
-    
-    def update(self, request, pk=None):
-        return super().update(request, pk)
-    
-    def destroy(self, request, pk=None):
-        """ DELETE /users/{id}/ - Delete user """
-        return super().destroy(request, pk)
-    
 
     
+    def list(self, request, *args, **kwargs):
+        """ 
+        Return a list of users
+        api endpoint: GET api/users/
+        """
+        return super().list(request, *args, **kwargs)
 
-
-
-
-
-# @action(detail=True, methods=['get'])
-# def profile(self, request, pk=None):
     
-#     user = self.get_object()
+    
 
-#     profile_data = {
-#         'user info': self.get_serializer(user).data,
-#         ;u
-#     }
 
