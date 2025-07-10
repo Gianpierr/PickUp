@@ -33,8 +33,6 @@ class ParticipationViewSet(viewsets.ModelViewSet):
     serializer_class = ParticipationSerializer
 
 
-
-
 class UserViewSet(viewsets.ModelViewSet):
     """ User view set for listing and retrieving users """
     queryset = User.objects.all()
@@ -47,6 +45,21 @@ class UserViewSet(viewsets.ModelViewSet):
         api endpoint: GET api/users/
         """
         return super().list(request, *args, **kwargs)
+    
+
+    def retrieve(self, request, pk=None):
+        """ Return a specific user """
+        try:
+            user = self.get_object()   # get the user 
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
+        except:
+            return Response(
+                {"error": "User not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    
 
     
     
