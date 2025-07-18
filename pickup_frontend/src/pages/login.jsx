@@ -16,9 +16,10 @@ function Login() {
     try {
       const data = await loginAPI({ email, password });
       //  token?
-      alert('Login successful!');
+      console.log('Login successful!');
     } catch (error) {
       alert('Login failed!');
+      console.error('Login error:', error);
     }
   };
 
@@ -68,7 +69,11 @@ function Login() {
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+            <Button 
+            type="submit" 
+            fullWidth variant="contained" 
+            sx={{ mt: 2 }}
+            onClick={handleLogin}>
                 Sign In
             </Button>
             <MuiLink component={RouterLink} to="/signup" variant="body2" sx={{ display: 'block', textAlign: 'center', mt: 1 }}>
