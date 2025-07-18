@@ -25,11 +25,4 @@ class Participation(models.Model):
     def __str__(self):
         return f"{self.player.username} in {self.game}"
     
-class Player(models.Model):
-    username = models.CharField()
-
-    def __str__(self):
-        return f'{self.username}'
-
-
 

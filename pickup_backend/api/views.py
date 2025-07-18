@@ -5,9 +5,12 @@ from .serializers import (
     SignupSerializer,
     SportSerializer, 
     GameSerializer, 
-    ParticipationSerializer
+    ParticipationSerializer,
+    UserSerializer
 )
 from .models import Sport, Game, Participation
+from django.contrib.auth.models import User
+
 
 class SignupView(APIView):
     def post(self, request):
@@ -29,4 +32,36 @@ class ParticipationViewSet(viewsets.ModelViewSet):
     queryset = Participation.objects.all()
     serializer_class = ParticipationSerializer
 
-class Users()
+
+class UserViewSet(viewsets.ModelViewSet):
+    """ User view set for listing and retrieving users """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    
+    def list(self, request, *args, **kwargs):
+        """ 
+        Return a list of users
+        api endpoint: GET api/users/
+        """
+        return super().list(request, *args, **kwargs)
+    
+
+    def retrieve(self, request, pk=None):
+        """ Return a specific user """
+        try:
+            user = self.get_object()   # get the user 
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
+        except:
+            return Response(
+                {"error": "User not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    
+
+    
+    
+
+
