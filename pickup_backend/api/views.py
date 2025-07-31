@@ -61,3 +61,36 @@ class PlayerViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['skill_level', 'age', 'gender']
     search_fields = ['username', 'skill_level']
+
+class UserViewSet(viewsets.ModelViewSet):
+    """ User view set for listing and retrieving users """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    
+    def list(self, request, *args, **kwargs):
+        """ 
+        Return a list of users
+        api endpoint: GET api/users/
+        """
+        return super().list(request, *args, **kwargs)
+    
+
+    def retrieve(self, request, pk=None):
+        """ Return a specific user """
+        try:
+            user = self.get_object()   # get the user 
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
+        except:
+            return Response(
+                {"error": "User not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    
+
+    
+    
+
+

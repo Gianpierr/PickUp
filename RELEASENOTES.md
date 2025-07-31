@@ -59,3 +59,21 @@ Additionally, we partially completed the database schema setup for API endpoints
 The inconsistent feature completions for this milestone aren't alarming to our group because we did complete other
 non-listed tasks like api creation and integration and routing. We believe that we can successfully complete the 
 remaining milestone 1 tasks during the upcoming milestone without setting us back further.
+
+
+## Milestone 2
+
+**Features**
+1. Game Hub UI:
+- Displays list of nearby pickup games (sport, time, location, host, player count)
+- Filter options for sport, date, and distance (UI only)
+- Join and Details buttons (UI only, functionality pending)
+- “Create Game” button navigates to existing creation screen
+
+2. Report Player UI:
+- Accessed from new button in bottom navigation
+- Dropdown to select player from most recent game (mock data)
+- Required description field
+- Snackbar confirmation on submit
+- Placeholder for backend submission (planned for Milestone 3)
+
