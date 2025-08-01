@@ -15,11 +15,13 @@ function UserProfile() {
     const [firstName, setFirstName] = React.useState('');
     const [lastName, setLastName] = React.useState('');
     const [personalInfo, setPersonalInfo] = React.useState('');
-
-  const [skill, setSkill] = React.useState('');
-  const [sports, setSports] = React.useState([]);
-  const [photo, setPhoto] = React.useState(null);
-  const [sportsOpen, setSportsOpen] = React.useState(false);
+    const [age, setAge] = React.useState('');
+    const [ageError, setAgeError] = React.useState('');
+    const [gender, setGender] = React.useState('');
+    const [skill, setSkill] = React.useState('');
+    const [sports, setSports] = React.useState([]);
+    const [photo, setPhoto] = React.useState(null);
+    const [sportsOpen, setSportsOpen] = React.useState(false);
 
   const handleSkillChange = (e) => setSkill(e.target.value);
   const handleSportsChange = (e) => setSports(e.target.value);
@@ -28,10 +30,24 @@ function UserProfile() {
       setPhoto(URL.createObjectURL(e.target.files[0]));
     }
   };
+  const handleAgeChange = (e) => {
+    const value = e.target.value;
+    setAge(value);
+    if (value && Number(value) < 16) {
+      setAgeError('Age must be at least 16');
+    } else {
+      setAgeError('');
+    }
+  };
+
  const handleSave = (e) => {
     e.preventDefault();
-    // send the data to  backend o
-    alert('Profile saved!');
+      if (age && Number(age) < 16) {
+        setAgeError('Age must be at least 16');
+        return;
+      }
+      // send the data to backend
+      alert('Profile saved!');
   };
 
   return (
@@ -72,6 +88,32 @@ function UserProfile() {
             value={lastName}
             onChange={e => setLastName(e.target.value)}
           />
+          <TextField
+            fullWidth
+            label="Age"
+            margin="normal"
+            type="number"
+            sx={{ mb: 2 }}
+            value={age}
+            onChange={handleAgeChange}
+            error={!!ageError}
+            helperText={ageError}
+          />
+          <TextField
+            select
+            fullWidth
+            label="Gender"
+            margin="normal"
+            sx={{ mb: 2 }}
+            value={gender}
+            onChange={e => setGender(e.target.value)}
+          >
+            <MenuItem value="">Select</MenuItem>
+            <MenuItem value="male">Male</MenuItem>
+            <MenuItem value="female">Female</MenuItem>
+            <MenuItem value="other">Other</MenuItem>
+            <MenuItem value="prefer_not_to_say">Prefer not to say</MenuItem>
+        </TextField>
         <TextField
             fullWidth
             label="Personal Info"
