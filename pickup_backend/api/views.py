@@ -44,7 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
         Return a list of users
         api endpoint: GET api/users/
         """
-        return super().list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs) 
     
 
     def retrieve(self, request, pk=None):
@@ -58,6 +58,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 {"error": "User not found"},
                 status=status.HTTP_404_NOT_FOUND
             )
+        
+
 
     
 
