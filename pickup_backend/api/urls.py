@@ -1,11 +1,18 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    SignupView,
-    SportViewSet,
-    GameViewSet,
-    ParticipationViewSet,
-    UserViewSet,
+    SignupView, 
+    SportViewSet, 
+    GameViewSet, 
+    ParticipationViewSet, 
+    UsersView,
+    CreateGameView,
+    RegisterView,
+    PlayerViewSet,
+)
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
 )
 # from rest_framework_simplejwt.views import (
 #     TokenObtainPairView,
@@ -16,6 +23,10 @@ router = DefaultRouter()
 router.register(r'sports', SportViewSet)
 router.register(r'games', GameViewSet)
 router.register(r'participations', ParticipationViewSet)
+router.register(r'players', PlayerViewSet)
+
+urlpatterns = [
+    path('users/', UsersView.as_view(), name='users'),
 router.register(r'users', UserViewSet)
 
 urlpatterns = [
@@ -23,6 +34,13 @@ urlpatterns = [
     path('', include(router.urls)),
 
     # JWT endpoints:
+    path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('login/', TokenObtainPairView.as_view(), name='login'),
+
+    path('games/create/', CreateGameView.as_view(), name='create-game'),
+
+    path('register/', RegisterView.as_view(), name='register'),
     # path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('login/', TokenObtainPairView.as_view(), name='login'),

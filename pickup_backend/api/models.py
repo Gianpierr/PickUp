@@ -25,4 +25,20 @@ class Participation(models.Model):
     def __str__(self):
         return f"{self.player.username} in {self.game}"
     
+class Player(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, unique=True)
+    username = models.CharField()
+    skill_level = models.CharField(max_length=20)
+    age = models.IntegerField(null=True, blank=True)
+    GENDER_CHOICES = [
+    ('male', 'Male'),
+    ('female', 'Female'),
+    ('other', 'Other'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.username}'
+
+
 

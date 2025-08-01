@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Sport, Game, Participation
+from .models import Sport, Game, Participation, Player
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -27,6 +27,32 @@ class ParticipationSerializer(serializers.ModelSerializer):
         model = Participation
         fields = '__all__'
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email'),
+            password=validated_data['password']
+        )
+        return user
+
+class PlayerSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    class Meta:
+        model = Player
+        fields = ['id', 'user', 'skill_level', 'age', 'gender']
 
 
 
