@@ -15,24 +15,34 @@ class Game(models.Model):
     """
     Represents a game event that users can organize and participate in.
     """
-    sport = models.ForeignKey(Sport, on_delete=models.CASCADE)  
-    organizer = models.ForeignKey(User, on_delete=models.CASCADE)  
+
+    sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(User, on_delete=models.CASCADE)  # host
     location = models.CharField(max_length=255)
     date = models.DateField()
     time = models.TimeField()
     notes = models.TextField(blank=True)  # Optional additional info about the game
+    max_players = models.IntegerField(default=10)  #  Added field
 
     def __str__(self):
         return f"{self.sport.name} on {self.date} at {self.time}"
-
 
 class Participation(models.Model):
     """
     Represents a user's participation in a game.
     Links a player (User) to a specific game.
     """
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    player = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    game = models.ForeignKey(
+        Game,
+        on_delete=models.CASCADE,
+        related_name="participations"  # used in GameSerializer
+    )
+    player = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="player_participations"  # different name to avoid conflict
+    )
 
     def __str__(self):
         return f"{self.player.username} in {self.game}"
