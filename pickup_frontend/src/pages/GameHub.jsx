@@ -14,7 +14,11 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemText
+  ListItemText,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 
@@ -25,28 +29,31 @@ const initialGames = [
     currentPlayers: 4,
     maxPlayers: 10,
     sport: "Soccer",
+    difficulty: "Intermediate",
     date: "Wed, Jul 17",
     time: "6:00 PM – 8:00 PM",
     location: "Trago Field",
-    host: "Jordan"
+    // host: "Jordan"
   },
   {
     currentPlayers: 2,
     maxPlayers: 8,
     sport: "Volleyball",
+    difficulty: "Beginner",
     date: "Today",
     time: "5:30 PM – 6:30 PM",
     location: "Woods Park",
-    host: "Barack"
+    // host: "Barack"
   },
   {
     currentPlayers: 8,
     maxPlayers: 8,
-    sport: "Flag Football",
+    sport: "Basketball",
+    difficulty: "Advanced",
     date: "Thu, Jul 18",
     time: "7:00 PM – 9:00 PM",
     location: "Oak Lake",
-    host: "Mauricio"
+    // host: "Mauricio"
   }
 ];
 
@@ -56,6 +63,8 @@ function GameHub() {
   const [games, setGames] = useState(initialGames);
   const [joinedGames, setJoinedGames] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedSport, setSelectedSport] = useState("All");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("All");
 
   const parseTimeRange = (timeRange) => {
     const [start, end] = timeRange.split("–").map((t) => t.trim());
@@ -104,6 +113,13 @@ function GameHub() {
     setDrawerOpen(open);
   };
 
+  const filteredGames = games.filter((game) => {
+    const matchesSport = selectedSport === "All" || game.sport === selectedSport;
+    const matchesDifficulty =
+      selectedDifficulty === "All" || game.difficulty === selectedDifficulty;
+    return matchesSport && matchesDifficulty;
+  });
+
   return (
     <Container maxWidth="md" sx={{ mt: 4, maxHeight: '80vh', overflowY: 'auto' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -137,11 +153,39 @@ function GameHub() {
         </Drawer>
       </Box>
 
-      <Box mb={2} textAlign="center">
-        <Typography variant="subtitle1">Filters: [ All Sports ] [ This Week ] [ Nearby ]</Typography>
-      </Box>
+      <Box display="flex" justifyContent="center" gap={2} mb={3}>
+  <FormControl size="small" sx={{ minWidth: 140 }}>
+    <InputLabel>Sport</InputLabel>
+    <Select
+      value={selectedSport}
+      label="Sport"
+      onChange={(e) => setSelectedSport(e.target.value)}
+    >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Soccer">Soccer</MenuItem>
+      <MenuItem value="Volleyball">Volleyball</MenuItem>
+      <MenuItem value="Basketball">Basketball</MenuItem>
+      <MenuItem value="Tennis">Tennis</MenuItem>
+    </Select>
+  </FormControl>
 
-      {games.map((game, index) => {
+  <FormControl size="small" sx={{ minWidth: 140 }}>
+    <InputLabel>Difficulty</InputLabel>
+    <Select
+      value={selectedDifficulty}
+      label="Difficulty"
+      onChange={(e) => setSelectedDifficulty(e.target.value)}
+    >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Beginner">Beginner</MenuItem>
+      <MenuItem value="Intermediate">Intermediate</MenuItem>
+      <MenuItem value="Advanced">Advanced</MenuItem>
+    </Select>
+  </FormControl>
+</Box>
+
+      
+      {filteredGames.map((game, index) => {
         const full = game.currentPlayers >= game.maxPlayers;
         const joined = joinedGames.includes(index);
         return (
@@ -175,7 +219,7 @@ function GameHub() {
                 <Typography>📍 {game.location}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>👤 Host: {game.host}</Typography>
+                <Typography>🎯 Difficulty: {game.difficulty}</Typography>
               </Grid>
 
               <Grid item xs={12} mt={1} textAlign="center">
