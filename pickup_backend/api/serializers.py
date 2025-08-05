@@ -6,17 +6,40 @@ from .models import Sport, Game, Participation, Player
 class SignupSerializer(serializers.ModelSerializer):
     """
     Serializer for user signup.
-    Handles creating a new User with username, email, password, first name, and last name.
+    Handles creating a new User with email as username if not explicitly provided.
     """
     password = serializers.CharField(write_only=True)
+    birthday = serializers.DateField(write_only=True, required=True)
+    gender = serializers.ChoiceField(choices=Player.GENDER_CHOICES, required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'birthday', 'gender']
 
     def create(self, validated_data):
-        # Create a new user with hashed password
-        return User.objects.create_user(**validated_data)
+        from datetime import date
+
+        birthday = validated_data.pop('birthday')
+        gender = validated_data.pop('gender')
+
+        # Default username to email if not provided
+        if 'username' not in validated_data or not validated_data['username']:
+            validated_data['username'] = validated_data['email']
+
+        user = User.objects.create_user(**validated_data)
+
+        # Calculate age from birthday
+        today = date.today()
+        age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
+
+        # Create Player profile linked to the user
+        Player.objects.create(
+            user=user,
+            age=age,
+            gender=gender
+        )
+
+        return user
 
 
 class SportSerializer(serializers.ModelSerializer):
