@@ -1,40 +1,39 @@
-# Code Milestone 3
+# Code Milestone 3 Release Notes
 
 ## What's Changed
-- Extended **Player model** with:
-  - `preferred_sports` (ManyToMany with Sport)
-  - `age` (calculated from birthday)
-  - `gender` (validated against defined choices)
-- Updated **SignupSerializer**:
-  - Handles birthday → auto‑calculate age
-  - Validates gender input
-  - Links preferred sports to Player profile
-- Added **PlayerSerializer** for editing skill level, age, gender, and sports.
-- Enhanced **UserSerializer** with support for full name and additional fields.
-- Implemented **signup logic** to create both a User and Player record.
-- Improved backend responses with clear success/error messages.
-- Updated **GameSerializer** to:
-  - Return `currentPlayers` count
-  - Include participant usernames
-- **Frontend updates**:
-  - Signup form integrated with Django backend
-  - Login API wired with backend JWT endpoints
-  - Material‑UI components for improved UX
-  - Error/success handling for signup and login
-  - Routing for `/signup`, `/login`, `/profile`, `/create`, `/report`, `/gamehub`
+- Extended **Player Model**
+  - Added support for `preferred_sports` (ManyToMany with Sport).
+  - Added `age` (calculated from birthday) and `gender` fields.
+  - Added inline docstrings for clarity.
+- Updated **Serializers**
+  - Extended `SignupSerializer` to handle birthday, gender, and sports preferences.
+  - Added `PlayerSerializer` for skill level, age, gender, and sports updates.
+  - Improved `GameSerializer` to show:
+    - Current number of players
+    - Participant usernames
+    - Host username
+    - Sport name
+- Enhanced **Views**
+  - Signup logic creates both a User and linked Player.
+  - Endpoints now return clear success/error messages.
+- Database / Migrations
+  - Resolved conflicting migrations and applied successfully.
+- Frontend Updates
+  - Login API (`loginAPI.jsx`) and Signup API (`signupAPI.jsx`) connected to backend.
+  - Signup Form integrated with Material UI fields: First Name, Last Name, Birthday, Gender, Email, Password.
+  - Success and error messages shown dynamically.
 
 ## Unit Tests
 ### Backend (Django)
-- ✅ User signup creates both User and Player profile
-- ✅ Joining a game creates a Participation record
-- ✅ GameSerializer returns correct currentPlayers and participant list
-- ✅ SignupSerializer rejects invalid gender input
+Added test cases in `/pickup_backend/tests/`:
+- **test_signup.py** → verifies user + player creation.
+- **test_game.py** → verifies game creation and field correctness.
+- **test_participation.py** → verifies joining games and participant count updates.
 
-### Frontend (React)
-- ✅ Signup form renders all required fields
-- ✅ Successful signup form submission hits backend `/signup/`
-- ✅ Error handling tested for backend 400 responses
-- ✅ Navigation tested for `/signup`, `/login`, `/gamehub`
+✅ All tests passed successfully with `python manage.py test`.
 
-## Full Changelog
-v0.2.0 → v0.3.0
+## Contributors
+- @ctheisen606  
+- @swells8  
+- @Mauricioaguileraortiz8  
+- @Gianpierr
