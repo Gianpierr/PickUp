@@ -42,17 +42,57 @@ class SportViewSet(viewsets.ModelViewSet):
 
 
 class GameViewSet(viewsets.ModelViewSet):
-    """Provides CRUD operations for games"""
+    """
+    Provides CRUD operations for games.
+    Includes organizer username, sport name,
+    current players, max players, and participants.
+    """
 
     queryset = Game.objects.all()
     serializer_class = GameSerializer
 
+    def create(self, request, *args, **kwargs):
+        """
+        Create a new game with the logged-in user as the organizer.
+        """
+        user = request.user
+        data = request.data.copy()
+        data['organizer'] = user.id  # link game to logged-in user
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class ParticipationViewSet(viewsets.ModelViewSet):
-    """Provides CRUD operations for game participations"""
+    """
+    Provides CRUD operations for game participations.
+    """
 
     queryset = Participation.objects.all()
     serializer_class = ParticipationSerializer
+
+    def create(self, request, *args, **kwargs):
+        """
+        Add the logged-in user to a game participation.
+        """
+        user = request.user
+        game_id = request.data.get("game_id")
+        if not game_id:
+            return Response({"error": "game_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            game = Game.objects.get(id=game_id)
+        except Game.DoesNotExist:
+            return Response({"error": "Game not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Prevent duplicate participation
+        if Participation.objects.filter(game=game, player=user).exists():
+            return Response({"error": "Already joined this game"}, status=status.HTTP_400_BAD_REQUEST)
+
+        Participation.objects.create(game=game, player=user)
+        return Response({"message": "Successfully joined the game"}, status=status.HTTP_201_CREATED)
 
 
 class UsersView(APIView):

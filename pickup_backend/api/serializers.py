@@ -52,29 +52,34 @@ class SportSerializer(serializers.ModelSerializer):
 
 
 class GameSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Game model.
-    """
-    sport = SportSerializer(read_only=True)  # Nested serializer for sport details
+    currentPlayers = serializers.SerializerMethodField()
+    participants = serializers.SerializerMethodField()
+    sport = serializers.CharField(source='sport.name', read_only=True)  # Show sport name
+    host = serializers.CharField(source='organizer.username', read_only=True)  # Show host username
 
     class Meta:
         model = Game
         fields = '__all__'
 
+    def get_currentPlayers(self, obj):
+        return obj.participations.count()
+
+    def get_participants(self, obj):
+        return [p.player.username for p in obj.participations.all()]
+
 
 class ParticipationSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Participation model.
-    Links a player to a game.
-    """
-    player = serializers.StringRelatedField(read_only=True)  # Displays username instead of ID
+    player = serializers.StringRelatedField(read_only=True)
     game = serializers.StringRelatedField(read_only=True)
+    game_id = serializers.PrimaryKeyRelatedField(
+        queryset=Game.objects.all(), source="game", write_only=True
+    )
 
     class Meta:
         model = Participation
-        fields = '__all__'
+        fields = ['id', 'player', 'game', 'game_id']
 
-
+        
 class RegisterSerializer(serializers.ModelSerializer):
     """
     Handles new user registration with password hashing.
