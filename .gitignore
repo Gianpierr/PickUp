@@ -1,12 +1,19 @@
-# Python
+# Python junk
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.env/# Python
 __pycache__/
 *.pyc
 
 # Virtual environment
 venv/
 
-# SQLite database
-db.sqlite3
+# Node.js / React
+node_modules/
+pickup_frontend/node_modules/
 
 # Node
 node_modules/
