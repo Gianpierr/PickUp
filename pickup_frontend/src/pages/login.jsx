@@ -6,7 +6,7 @@ import sportsBg from '../assets/sports-bg.jpg';
 import { loginAPI } from '../api/loginAPI';
 
 function Login() {
-  const [username, setUsername] = React.useState(''); // switched from email → username
+  const [username, setUsername] = React.useState(''); 
   const [password, setPassword] = React.useState('');
 
   const handleLogin = async (event) => {

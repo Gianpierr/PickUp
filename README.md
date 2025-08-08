@@ -22,8 +22,9 @@ pickup-frontend/
 │   │       ├── login.jsx
 │   │       ├── signup.jsx
 │   │       └── userProfile.jsx
-│   │       ├── xxxx.jsx
-│   │       └── xxxx.jsx
+│   │       ├── CreateGame.jsx
+│   │       ├── GameHub.jsx
+│   │       └── Report.jsx
 |   |-- test/            # testing files
 │   ├── App.js
 │   ├── index.js
