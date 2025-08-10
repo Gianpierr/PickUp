@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    SignupView, 
+
     SportViewSet, 
     GameViewSet, 
     ParticipationViewSet, 
@@ -25,12 +25,10 @@ router.register(r'games', GameViewSet)
 router.register(r'participations', ParticipationViewSet)
 router.register(r'players', PlayerViewSet)
 
-urlpatterns = [
-    path('users/', UsersView.as_view(), name='users'),
-router.register(r'users', UserViewSet)
+
 
 urlpatterns = [
-    path('signup/', SignupView.as_view(), name='signup'),
+    path('signup/', RegisterView.as_view(), name='signup'),
     path('', include(router.urls)),
 
     # JWT endpoints:
@@ -40,8 +38,5 @@ urlpatterns = [
 
     path('games/create/', CreateGameView.as_view(), name='create-game'),
 
-    path('register/', RegisterView.as_view(), name='register'),
-    # path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('login/', TokenObtainPairView.as_view(), name='login'),
+    
 ]
