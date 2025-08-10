@@ -1,5 +1,50 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    birthday = models.DateField(null=True, blank=True)
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other'),
+        ('prefer_not_to_say', 'Prefer not to say'),
+    ]
+    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, null=True, blank=True)
+    SKILL_LEVEL_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
+    skill_level = models.CharField(max_length=20, choices=SKILL_LEVEL_CHOICES, null=True, blank=True)
+
+    @property
+    def age(self):
+        if not self.birthday:
+            return None
+        today = date.today()
+        age = today.year - self.birthday.year
+        if today.month < self.birthday.month or (today.month == self.birthday.month and today.day < self.birthday.day):
+            age -= 1
+        return age
+
+# Keep your existing models (Sport, Game, Participation, Player)
+
+class Player(models.Model):
+    user = models.OneToOneField(Profile, on_delete=models.CASCADE, null=True, blank=True, unique=True)
+    username = models.CharField()
+    skill_level = models.CharField(max_length=20)
+    age = models.IntegerField(null=True, blank=True)
+    GENDER_CHOICES = [
+    ('male', 'Male'),
+    ('female', 'Female'),
+    ('other', 'Other'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.username}'
 
 class Sport(models.Model):
     """
@@ -17,7 +62,7 @@ class Game(models.Model):
     """
 
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    organizer = models.ForeignKey(User, on_delete=models.CASCADE)  # host
+    organizer = models.ForeignKey(Profile, on_delete=models.CASCADE)
     location = models.CharField(max_length=255)
     date = models.DateField()
     time = models.TimeField()
