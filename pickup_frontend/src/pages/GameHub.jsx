@@ -174,9 +174,16 @@ function GameHub() {
                   <ListItemText primary="My Games" />
                 </ListItemButton>
               </ListItem>
+
               <ListItem disablePadding>
                 <ListItemButton onClick={() => navigate("/report")}>
                   <ListItemText primary="Report Player" />
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => navigate("/profile")}>
+                  <ListItemText primary="Profile" />
                 </ListItemButton>
               </ListItem>
             </List>
