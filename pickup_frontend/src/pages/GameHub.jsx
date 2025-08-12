@@ -20,7 +20,11 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemText
+  ListItemText,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 
@@ -32,6 +36,15 @@ function GameHub() {
   const [joinedGames, setJoinedGames] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedSport, setSelectedSport] = useState("All");
+  const [selectedSkill, setSelectedSkill] = useState("All");
+
+  const filteredGames = games.filter((game) => {
+    const matchesSport = selectedSport === "All" || game.sport === selectedSport;
+    const matchesSkill =
+      selectedSkill === "All" || game.skill === selectedSkill;
+    return matchesSport && matchesSkill;
+  });
 
   // Ensure user is logged in
   useEffect(() => {
@@ -111,7 +124,7 @@ function GameHub() {
     Date: ${game.date}
     Time: ${game.time}
     Location: ${game.location}
-    Host: ${game.host}
+    Skill: ${game.skill}
     Participants: ${
       game.participants && game.participants.length > 0
         ? game.participants.join(", ")
@@ -130,6 +143,7 @@ function GameHub() {
     }
     setDrawerOpen(open);
   };
+
 
   return (
     <Container
@@ -160,9 +174,16 @@ function GameHub() {
                   <ListItemText primary="My Games" />
                 </ListItemButton>
               </ListItem>
+
               <ListItem disablePadding>
                 <ListItemButton onClick={() => navigate("/report")}>
                   <ListItemText primary="Report Player" />
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => navigate("/profile")}>
+                  <ListItemText primary="Profile" />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -173,8 +194,40 @@ function GameHub() {
       {/* Error display */}
       {error && <Typography color="error">{error}</Typography>}
 
+      {/* Filter controls */}
+<Box display="flex" justifyContent="center" gap={2} mb={3}>
+  <FormControl size="small" sx={{ minWidth: 140 }}>
+    <InputLabel>Sport</InputLabel>
+    <Select
+      value={selectedSport}
+      label="Sport"
+      onChange={(e) => setSelectedSport(e.target.value)}
+    >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Soccer">Soccer</MenuItem>
+      <MenuItem value="Volleyball">Volleyball</MenuItem>
+      <MenuItem value="Basketball">Basketball</MenuItem>
+      <MenuItem value="Tennis">Tennis</MenuItem>
+    </Select>
+  </FormControl>
+
+  <FormControl size="small" sx={{ minWidth: 140 }}>
+    <InputLabel>Skill</InputLabel>
+    <Select
+      value={selectedSkill}
+      label="Skill"
+      onChange={(e) => setSelectedSkill(e.target.value)}
+    >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Beginner">Beginner</MenuItem>
+      <MenuItem value="Intermediate">Intermediate</MenuItem>
+      <MenuItem value="Advanced">Advanced</MenuItem>
+    </Select>
+  </FormControl>
+</Box>
+
       {/* Render games */}
-      {games.map((game, index) => {
+      {filteredGames.map((game, index) => {
         const full = game.currentPlayers >= game.maxPlayers;
         const joined = joinedGames.includes(index);
 
@@ -216,7 +269,7 @@ function GameHub() {
                 <Typography>📍 {game.location}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>👤 Host: {game.host}</Typography>
+                <Typography>🎯 {game.skill}</Typography>
               </Grid>
 
               {/* Join & Details buttons */}
