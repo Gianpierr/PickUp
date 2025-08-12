@@ -170,7 +170,7 @@ function GameHub() {
           >
             <List>
               <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton onClick={() => navigate("/mygames")}>
                   <ListItemText primary="My Games" />
                 </ListItemButton>
               </ListItem>
