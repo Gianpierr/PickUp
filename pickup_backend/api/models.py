@@ -34,7 +34,6 @@ class Profile(models.Model):
 class Player(models.Model):
     user = models.OneToOneField(Profile, on_delete=models.CASCADE, null=True, blank=True, unique=True)
     username = models.CharField()
-    skill_level = models.CharField(max_length=20)
     age = models.IntegerField(null=True, blank=True)
     GENDER_CHOICES = [
     ('male', 'Male'),
@@ -93,44 +92,3 @@ class Participation(models.Model):
         return f"{self.player.username} in {self.game}"
 
 
-class Player(models.Model):
-    """
-    Extends the default Django User model with additional profile information.
-    Each Player is linked to exactly one User.
-    """
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, null=True, blank=True, unique=True
-    )
-
-    username = models.CharField()
-
-    skill_level = models.CharField(
-        max_length=20, null=True, blank=True,
-        help_text="Player's self-reported skill level (e.g., Beginner, Intermediate)."
-    )
-    age = models.IntegerField(null=True, blank=True)
-    
-    # Gender options
-    GENDER_CHOICES = [
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other'),
-    ]
-    gender = models.CharField(
-        max_length=10,
-        choices=GENDER_CHOICES,
-        null=True,
-        blank=True,
-        help_text="Player's gender (optional)."
-    )
-
-    # New field for sports preference
-    preferred_sports = models.ManyToManyField(
-        Sport,
-        blank=True,
-        related_name='preferred_by_players',
-        help_text="List of sports this player prefers to play."
-    )
-
-    def __str__(self):
-        return f"{self.user.username if self.user else 'Anonymous'}"
