@@ -31,19 +31,6 @@ class Profile(models.Model):
 
 # Keep your existing models (Sport, Game, Participation, Player)
 
-class Player(models.Model):
-    user = models.OneToOneField(Profile, on_delete=models.CASCADE, null=True, blank=True, unique=True)
-    username = models.CharField()
-    age = models.IntegerField(null=True, blank=True)
-    GENDER_CHOICES = [
-    ('male', 'Male'),
-    ('female', 'Female'),
-    ('other', 'Other'),
-    ]
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.username}'
 
 class Sport(models.Model):
     """

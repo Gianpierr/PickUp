@@ -7,8 +7,7 @@ from .views import (
     ParticipationViewSet, 
     UsersView,
     CreateGameView,
-    RegisterView,
-    PlayerViewSet,
+
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -19,7 +18,7 @@ router = DefaultRouter()
 router.register(r'sports', SportViewSet)
 router.register(r'games', GameViewSet)
 router.register(r'participations', ParticipationViewSet)
-router.register(r'players', PlayerViewSet)
+
 
 urlpatterns = [
     
@@ -33,5 +32,5 @@ urlpatterns = [
     path('login/', TokenObtainPairView.as_view(), name='login'),
 
     path('games/create/', CreateGameView.as_view(), name='create-game'),
-    path('register/', RegisterView.as_view(), name='register'),
+    
 ]

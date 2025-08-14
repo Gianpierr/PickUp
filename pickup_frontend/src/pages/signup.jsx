@@ -12,6 +12,7 @@ function SignUp() {
     first_name: '',
     last_name: '',
     birthday: '',
+    skill_level: '',
     gender: '',
     email: '',
     password: '',
@@ -31,9 +32,9 @@ function SignUp() {
     try {
       // Automatically map email to username
       const payload = { ...formData, username: formData.email };
-
+      console.log(payload);
       const response = await signupAPI(payload);
-
+      
       setSuccess('Signup successful! You may now log in.');
       setError('');
       console.log('Signup Response:', response);
@@ -79,6 +80,14 @@ function SignUp() {
           <MenuItem value="other">Other</MenuItem>
           <MenuItem value="prefer_not_to_say">Prefer not to say</MenuItem>
         </TextField>
+        <TextField margin="normal" required fullWidth select label="Skill Level" name="skill_level" onChange={handleChange}>
+          <MenuItem value="">Select</MenuItem>
+          <MenuItem value="beginner">Beginner</MenuItem>
+          <MenuItem value="intermediate">Intermediate</MenuItem>
+          <MenuItem value="advanced">Advanced</MenuItem>
+          
+        </TextField>
+        
         <TextField margin="normal" required fullWidth label="Email Address" name="email" onChange={handleChange} />
         <TextField
           margin="normal"

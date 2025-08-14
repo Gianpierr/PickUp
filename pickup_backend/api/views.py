@@ -7,10 +7,9 @@ from .serializers import (
     GameSerializer,
     ParticipationSerializer,
     UserSerializer,
-    RegisterSerializer,
-    PlayerSerializer,
+    ProfileSerializer
 )
-from .models import Sport, Game, Participation, Player
+from .models import Sport, Game, Participation, Profile
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -127,22 +126,17 @@ class CreateGameView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RegisterView(generics.CreateAPIView):
-    """Handles user registration via RegisterSerializer"""
-
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
 
 
-class PlayerViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Player profiles.
 
     Supports listing, retrieving, creating, and updating Players,
     including their preferred sports.
     """
-    queryset = Player.objects.all()
-    serializer_class = PlayerSerializer
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['skill_level', 'age', 'gender', 'preferred_sports']

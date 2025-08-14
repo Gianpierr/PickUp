@@ -1,42 +1,47 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Sport, Game, Participation, Player
+from .models import Sport, Game, Participation, Profile
+from datetime import date
 
-
-class SignupSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.Serializer):
     """
     Serializer for user signup.
     Handles creating a new User with email as username if not explicitly provided.
     """
+    username = serializers.CharField(required=False)
+    email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True)
-    birthday = serializers.DateField(write_only=True, required=True)
-    gender = serializers.ChoiceField(choices=Player.GENDER_CHOICES, required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    birthday = serializers.DateField(required=True)
+    gender = serializers.ChoiceField(choices=Profile.GENDER_CHOICES, required=True)
+    skill_level = serializers.ChoiceField(choices=Profile.SKILL_LEVEL_CHOICES, required=True)
 
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'birthday', 'gender']
+   
 
     def create(self, validated_data):
-        from datetime import date
 
         birthday = validated_data.pop('birthday')
         gender = validated_data.pop('gender')
+        skill_level = validated_data.pop('skill_level')
 
         # Default username to email if not provided
         if 'username' not in validated_data or not validated_data['username']:
             validated_data['username'] = validated_data['email']
 
         user = User.objects.create_user(**validated_data)
+        
 
         # Calculate age from birthday
         today = date.today()
         age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
 
-        # Create Player profile linked to the user
-        Player.objects.create(
+        profile = Profile.objects.create(
             user=user,
-            age=age,
-            gender=gender
+            birthday=birthday,
+            gender=gender,
+            skill_level=skill_level,
+
         )
 
         return user
@@ -79,74 +84,19 @@ class ParticipationSerializer(serializers.ModelSerializer):
         model = Participation
         fields = ['id', 'player', 'game', 'game_id']
 
-        
-class RegisterSerializer(serializers.ModelSerializer):
-    """
-    Handles new user registration with password hashing.
-    """
-    password = serializers.CharField(write_only=True)
-
+class ProfileSerializer(serializers.ModelSerializer):
+    """ Serializer for Profile model """
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
-
-    def create(self, validated_data):
-        # Create a user while securely storing the password
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data.get('email'),
-            password=validated_data['password']
-        )
-        return user
-
-
-class PlayerSerializer(serializers.ModelSerializer):
-    """
-    Serializer for Player profile information.
-    Includes skill level, age, gender, and preferred sports.
-    Allows users to set or update their preferred sports.
-    """
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    preferred_sports = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Sport.objects.all(),
-        required=False,
-        help_text="List of sport IDs the player prefers."
-    )
-
-    class Meta:
-        model = Player
-        fields = ['id', 'user', 'skill_level', 'age', 'gender', 'preferred_sports']
-
-    def create(self, validated_data):
-        """
-        Create a new Player profile with optional preferred sports.
-        """
-        preferred_sports_data = validated_data.pop('preferred_sports', None)
-        player = Player.objects.create(**validated_data)
-
-        if preferred_sports_data:
-            player.preferred_sports.set(preferred_sports_data)
-
-        return player
+        model = Profile
+        fields = ['id', 'user', 'birthday', 'gender', 'skill_level', 'age']
+        read_only_fields = ['age']
 
     def update(self, instance, validated_data):
-        """
-        Update an existing Player profile, including preferred sports if provided.
-        """
-        preferred_sports_data = validated_data.pop('preferred_sports', None)
-
-        # Update other fields
+        """ Update profile instance with validated data. """
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-
-        # Update preferred sports
-        if preferred_sports_data is not None:
-            instance.preferred_sports.set(preferred_sports_data)
-
         instance.save()
         return instance
-
 class UserSerializer(serializers.ModelSerializer):
     """
     Serializer for User model with additional details.
