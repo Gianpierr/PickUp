@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem } from '@mui/material';
 import { signupAPI } from '../api/signupAPI';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * SignUp Component
@@ -8,6 +9,7 @@ import { signupAPI } from '../api/signupAPI';
  * Signup form where `email` is automatically used as the `username`.
  */
 function SignUp() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -38,6 +40,7 @@ function SignUp() {
       setSuccess('Signup successful! You may now log in.');
       setError('');
       console.log('Signup Response:', response);
+      setTimeout(() => navigate('/login'), 1500);
 
       // TODO: Redirect to login page after signup
     } catch (err) {

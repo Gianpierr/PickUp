@@ -25,7 +25,7 @@ function App() {
       <Routes>
         {/* Default route - login page */}
         <Route 
-          path="/" 
+          path="/login" 
           element={<Login />} 
           // TODO: Redirect to /gamehub if user is already authenticated
         />
