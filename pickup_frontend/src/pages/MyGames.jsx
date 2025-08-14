@@ -19,11 +19,12 @@ import {
   Chip,
   Stack,
 } from "@mui/material";
+import axios from "axios"; // for backend
 
 // ----- DEMO DATA (replace later with backend API results) -----
 const ME = { id: 1, username: "mauricio" }; // current logged-in user
 
-const demoGames = [
+const initialDemoGames = [
   {
     id: 101,
     gameName: "Evening Hoops",
@@ -33,11 +34,12 @@ const demoGames = [
     location: "Campus Rec Court 2",
     currentPlayers: 7,
     maxPlayers: 10,
-    skill: "intermediate",
-    host: { id: 1, username: "mauricio" }, // hosted by me
+    skill: "Intermediate",
+    host: { id: 1, username: "mauricio" },
   },
   {
     id: 102,
+    gameName: "Friday Night Soccer",
     sport: "Soccer",
     date: "Fri, Aug 15",
     time: "5:00 PM – 6:30 PM",
@@ -46,20 +48,13 @@ const demoGames = [
     maxPlayers: 10,
     skill: "Advanced",
     host: { id: 3, username: "alex" },
-    isJoined: true, // joined by me
-  },
-  {
-    id: 103,
-    sport: "Volleyball",
-    date: "Sat, Aug 16",
-    time: "2:00 PM – 3:30 PM",
-    location: "Woods Park",
-    currentPlayers: 2,
-    maxPlayers: 8,
-    skill: "Beginner",
-    host: { id: 4, username: "sydney" },
+    isJoined: true,
   },
 ];
+
+const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
+const demoGames = storedGames.length > 0 ? storedGames : initialDemoGames;
+
 
 // Utility: check if current user is hosting the game
 const isHostedByMe = (g) => g.host?.id === ME.id || g.host?.username === ME.username;
@@ -89,6 +84,26 @@ export default function MyGames() {
     const full = (g.currentPlayers ?? 0) >= (g.maxPlayers ?? 10);
     const hostedByMe = isHostedByMe(g);
 
+    // backend delete logic?
+    /*
+    const handleDelete = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        await axios.delete(`http://127.0.0.1:8000/games/${g.id}/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        alert("Game deleted!");
+        // TODO: refresh list here
+      } catch (err) {
+        console.error("Delete failed", err);
+        alert("Could not delete game.");
+      }
+    };
+    */
+
     return (
       <Box
         sx={{
@@ -117,27 +132,43 @@ export default function MyGames() {
           <Grid item xs={12}><Typography>🎯 Skill: {g.skill ?? "N/A"}</Typography></Grid>
 
           {/* Admin-only buttons (visible only if user is host) */}
-          {hostedByMe && (
-            <Grid item xs={12} mt={1} textAlign="center">
-              <Stack direction="row" spacing={2} justifyContent="center">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  // TODO: Implement edit logic (e.g., open edit form or route)
-                  onClick={() => navigate('/create', { state: { game: g } })}                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  // TODO: Implement delete API call
-                  onClick={() => alert(`Delete game #${g.id} (TODO)`)}
-                >
-                  Delete
-                </Button>
-              </Stack>
-            </Grid>
-          )}
+{hostedByMe && (
+  <Grid item xs={12} mt={1} textAlign="center">
+    <Stack direction="row" spacing={2} justifyContent="center">
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() =>
+          navigate("/create", {
+            state: {
+              game: {
+                ...g,
+                skill: g.skill?.toLowerCase(),
+                limit: g.maxPlayers?.toString(),
+              },
+            },
+          })
+        }
+      >
+        Edit
+      </Button>
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={() => {
+          const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
+          const updatedGames = storedGames.filter((game) => game.id !== g.id);
+          localStorage.setItem("mygames", JSON.stringify(updatedGames));
+          alert("Game deleted!");
+          window.location.reload();
+        }}
+      >
+        Delete
+      </Button>
+    </Stack>
+  </Grid>
+)}
+
 
           {/* Universal Details Button */}
           <Grid item xs={12} mt={1} textAlign="center">
