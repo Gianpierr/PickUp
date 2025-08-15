@@ -1,5 +1,8 @@
 import React from 'react';
 import { Container, Box, Typography, TextField, MenuItem, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { createGameAPI } from '../api/createGameAPI';
+import { useState } from 'react'
 
 const sportsOptions = ['Basketball', 'Soccer', 'Volleyball', 'Tennis'];
 const skillLevels = [
@@ -9,17 +12,42 @@ const skillLevels = [
 ];
 
 function CreateGame() {
-  const [gameName, setGameName] = React.useState('');
-  const [location, setLocation] = React.useState('');
-  const [date, setDate] = React.useState('');
-  const [sport, setSport] = React.useState('');
-  const [skill, setSkill] = React.useState('');
-  const [limit, setLimit] = React.useState('');
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    game_name: '',
+    location: '',
+    date: '',
+    sport: '',
+    skill_level: '',
+    limit: '',
+  })
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Backend Stuff
-    alert('Game Created!');
+    try {
+      const payload = { ...formData};
+      
+      const response = await createGameAPI(payload);
+      alert('Game Created!');
+      setTimeout(() => navigate('/gamehub'), 1500)
+
+      setSuccess('Game Creation successful!');
+      setError('');
+      // navigate to gamehub page
+    }
+    catch (err) {
+      setError(err.message || 'Game creation failed.');
+      setSuccess('');
+      alert('Game Creation failed!');
+
+    }
+    
   };
 
  return (
@@ -32,17 +60,19 @@ function CreateGame() {
         <TextField
           fullWidth
           label="Game Name"
+          name='game_name'
           margin="normal"
-          value={gameName}
-          onChange={(e) => setGameName(e.target.value)}
+          value={formData.game_name}
+          onChange={handleChange}
           required
         />
         <TextField
           fullWidth
           label="Location"
           margin="normal"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          value={formData.location}
+          name="location"
+          onChange={handleChange}
           required
         />
         <TextField
@@ -50,9 +80,10 @@ function CreateGame() {
           label="Date & Time"
           type="datetime-local"
           margin="normal"
+          name="date"
           InputLabelProps={{ shrink: true }}
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={formData.date}
+          onChange={handleChange}
           required
         />
         <TextField
@@ -60,8 +91,9 @@ function CreateGame() {
           fullWidth
           label="Sport"
           margin="normal"
-          value={sport}
-          onChange={(e) => setSport(e.target.value)}
+          name="sport"
+          value={formData.sport}
+          onChange={handleChange}
           required
         >
           {sportsOptions.map((option) => (
@@ -74,9 +106,10 @@ function CreateGame() {
           select
           fullWidth
           label="Skill Level"
+          name="skill_level"
           margin="normal"
-          value={skill}
-          onChange={(e) => setSkill(e.target.value)}
+          value={formData.skill_level}
+          onChange={handleChange}
           required
         >
           {skillLevels.map((option) => (
@@ -91,15 +124,17 @@ function CreateGame() {
           label="Player Limit"
           type="text"
           margin="normal"
+          name="limit"
           required
-          value={limit}
+          value={formData.limit}
           onChange={(e) => {
             const value = e.target.value;
             if (
               value === '' ||
               (/^\d+$/.test(value) && parseInt(value) >= 1 && parseInt(value) <= 50)
             ) {
-              setLimit(value);
+               setFormData({...formData, limit: parseInt(value)});
+               
             }
           }}
           />

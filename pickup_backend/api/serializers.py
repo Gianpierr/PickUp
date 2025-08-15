@@ -59,19 +59,52 @@ class SportSerializer(serializers.ModelSerializer):
 class GameSerializer(serializers.ModelSerializer):
     currentPlayers = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
-    sport = serializers.CharField(source='sport.name', read_only=True)  # Show sport name
     host = serializers.CharField(source='organizer.username', read_only=True)  # Show host username
+    date = serializers.DateTimeField(write_only=True, required=True)
+    sport = serializers.CharField(write_only=True)
+
 
     class Meta:
         model = Game
         fields = '__all__'
+        extra_kwargs = {
+            'organizer': {'required': False, 'allow_null': True}
+        }
 
+    def create(self, validated_data):
+        print("=== SERIALIZER CREATE DEBUG ===")
+        print("Validated data:", validated_data)
+        
+        # Remove organizer if it exists in validated_data (it shouldn't, but just in case)
+        validated_data.pop('organizer', None)
+        
+        datetime_value = validated_data.pop('date')
+        validated_data['date'] = datetime_value.date()
+        validated_data['time'] = datetime_value.time()
+        sport_name = validated_data.pop('sport')
+        
+        from .models import Sport
+        sport = Sport.objects.get(name=sport_name)
+        
+        # Get a user for testing (you'll replace this with proper auth later)
+        from django.contrib.auth.models import User
+        user = User.objects.first()
+        organizer = user.profile
+        
+        game = Game.objects.create(
+            sport=sport,
+            organizer=organizer,
+            **validated_data
+        )
+        return game
+    
     def get_currentPlayers(self, obj):
+        """ Return the current number of players in the game """
         return obj.participations.count()
-
+    
     def get_participants(self, obj):
-        return [p.player.username for p in obj.participations.all()]
-
+        """ Return all participants in a given game """
+        return [participation.player.username for participation in obj.participations.all()]
 
 class ParticipationSerializer(serializers.ModelSerializer):
     player = serializers.StringRelatedField(read_only=True)

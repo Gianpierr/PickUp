@@ -12,6 +12,7 @@ from .serializers import (
 from .models import Sport, Game, Participation, Profile
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import AllowAny
 
 
 class SignupView(APIView):
@@ -41,27 +42,15 @@ class SportViewSet(viewsets.ModelViewSet):
 
 
 class GameViewSet(viewsets.ModelViewSet):
-    """
-    Provides CRUD operations for games.
-    Includes organizer username, sport name,
-    current players, max players, and participants.
-    """
-
     queryset = Game.objects.all()
     serializer_class = GameSerializer
+    permission_classes = [AllowAny]  # Add this temporarily
 
-    def create(self, request, *args, **kwargs):
-        """
-        Create a new game with the logged-in user as the organizer.
-        """
-        user = request.user
-        data = request.data.copy()
-        data['organizer'] = user.id  # link game to logged-in user
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+
+    
+
+    
 
 
 class ParticipationViewSet(viewsets.ModelViewSet):

@@ -34,7 +34,6 @@ function SignUp() {
     try {
       // Automatically map email to username
       const payload = { ...formData, username: formData.email };
-      console.log(payload);
       const response = await signupAPI(payload);
       
       setSuccess('Signup successful! You may now log in.');

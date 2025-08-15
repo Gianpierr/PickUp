@@ -36,7 +36,7 @@ class Sport(models.Model):
     """
     Represents a sport that can be played in the app (e.g., Basketball, Soccer).
     """
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -46,14 +46,17 @@ class Game(models.Model):
     """
     Represents a game event that users can organize and participate in.
     """
-
+    game_name = models.CharField(max_length=255, default="Untitled Game")
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     organizer = models.ForeignKey(Profile, on_delete=models.CASCADE)
     location = models.CharField(max_length=255)
     date = models.DateField()
-    time = models.TimeField()
-    notes = models.TextField(blank=True)  # Optional additional info about the game
-    max_players = models.IntegerField(default=10)  #  Added field
+    time = models.TimeField(null=True, blank=True)
+    skill_level = models.CharField(max_length=20, choices=Profile.SKILL_LEVEL_CHOICES, default=Profile.SKILL_LEVEL_CHOICES[0])
+    # notes = models.TextField(blank=True)  # Optional additional info about the game
+    limit = models.IntegerField(default=10)  #  Added field
+
+    
 
     def __str__(self):
         return f"{self.sport.name} on {self.date} at {self.time}"
