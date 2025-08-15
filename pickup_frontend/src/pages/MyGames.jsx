@@ -3,11 +3,11 @@
  * MyGames.jsx
  *
  * Displays games that the user has either joined or is hosting.
- * This is a UI-only version using demo data
+ * This is a UI-only version using localstorage
  */
 
-import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo, useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Container,
   Box,
@@ -21,54 +21,64 @@ import {
 } from "@mui/material";
 import axios from "axios"; // for backend
 
+
 // ----- DEMO DATA (replace later with backend API results) -----
 const ME = { id: 1, username: "mauricio" }; // current logged-in user
 
-const initialDemoGames = [
-  {
-    id: 101,
-    gameName: "Evening Hoops",
-    sport: "Basketball",
-    date: "Thu, Aug 14",
-    time: "6:00 PM – 7:30 PM",
-    location: "Campus Rec Court 2",
-    currentPlayers: 7,
-    maxPlayers: 10,
-    skill: "Intermediate",
-    host: { id: 1, username: "mauricio" },
-  },
-  {
-    id: 102,
-    gameName: "Friday Night Soccer",
-    sport: "Soccer",
-    date: "Fri, Aug 15",
-    time: "5:00 PM – 6:30 PM",
-    location: "Trago Field",
-    currentPlayers: 10,
-    maxPlayers: 10,
-    skill: "Advanced",
-    host: { id: 3, username: "alex" },
-    isJoined: true,
-  },
-];
+// const initialDemoGames = [
+//   {
+//     id: 101,
+//     gameName: "Evening Hoops",
+//     sport: "Basketball",
+//     date: "Thu, Aug 14",
+//     time: "6:00 PM – 7:30 PM",
+//     location: "Campus Rec Court 2",
+//     currentPlayers: 7,
+//     maxPlayers: 10,
+//     skill: "Intermediate",
+//     host: { id: 1, username: "mauricio" },
+//   },
+//   {
+//     id: 102,
+//     gameName: "Friday Night Soccer",
+//     sport: "Soccer",
+//     date: "Fri, Aug 15",
+//     time: "5:00 PM – 6:30 PM",
+//     location: "Trago Field",
+//     currentPlayers: 10,
+//     maxPlayers: 10,
+//     skill: "Advanced",
+//     host: { id: 3, username: "alex" },
+//     isJoined: true,
+//   },
+// ];
 
-const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
-const demoGames = storedGames.length > 0 ? storedGames : initialDemoGames;
+// const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
+// const demoGames = storedGames.length > 0 ? storedGames : initialDemoGames;
 
-
-// Utility: check if current user is hosting the game
 const isHostedByMe = (g) => g.host?.id === ME.id || g.host?.username === ME.username;
-
-// Utility: check if current user has joined the game
 const isJoinedByMe = (g) => !!g.isJoined || isHostedByMe(g);
 
 export default function MyGames() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [games, setGames] = useState(() =>
+    JSON.parse(localStorage.getItem("mygames") || "[]")
+  );
   const [tab, setTab] = useState(0); // 0 = All, 1 = Joined, 2 = Hosting
 
+  // Update game list when redirected after edit
+  useEffect(() => {
+    if (location.state?.gameJustEdited) {
+      const updated = JSON.parse(localStorage.getItem("mygames") || "[]");
+      setGames(updated);
+      window.history.replaceState({}, document.title); // Clear state
+    }
+  }, [location.state]);
+
   // Tab-specific game lists
-  const hosting = useMemo(() => demoGames.filter(isHostedByMe), []);
-  const joined = useMemo(() => demoGames.filter(isJoinedByMe), []);
+  const hosting = useMemo(() => games.filter(isHostedByMe), [games]);
+  const joined = useMemo(() => games.filter(isJoinedByMe), [games]);
   const all = useMemo(() => {
     const map = new Map();
     [...joined, ...hosting].forEach((g) => map.set(g.id, g));
@@ -127,48 +137,56 @@ export default function MyGames() {
               {full ? "Full Game" : `${g.currentPlayers ?? 0}/${g.maxPlayers ?? 10} Players`}
             </Typography>
           </Grid>
-          <Grid item xs={12}><Typography>📅 {g.date ?? "TBD"} | {g.time ?? "TBD"}</Typography></Grid>
+          <Grid item xs={12}>{(() => {
+          const dt = new Date(g.date);
+          const formattedDate = dt.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+          const formattedTime = dt.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+          return <Typography>📅 {formattedDate} | {formattedTime}</Typography>;
+        })()}</Grid>
           <Grid item xs={12}><Typography>📍 {g.location ?? "TBD"}</Typography></Grid>
           <Grid item xs={12}><Typography>🎯 Skill: {g.skill ?? "N/A"}</Typography></Grid>
 
           {/* Admin-only buttons (visible only if user is host) */}
-{hostedByMe && (
-  <Grid item xs={12} mt={1} textAlign="center">
-    <Stack direction="row" spacing={2} justifyContent="center">
-      <Button
-        variant="outlined"
-        color="primary"
-        onClick={() =>
-          navigate("/create", {
-            state: {
-              game: {
-                ...g,
-                skill: g.skill?.toLowerCase(),
-                limit: g.maxPlayers?.toString(),
-              },
-            },
-          })
-        }
-      >
-        Edit
-      </Button>
-      <Button
-        variant="outlined"
-        color="error"
-        onClick={() => {
-          const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
-          const updatedGames = storedGames.filter((game) => game.id !== g.id);
-          localStorage.setItem("mygames", JSON.stringify(updatedGames));
-          alert("Game deleted!");
-          window.location.reload();
-        }}
-      >
-        Delete
-      </Button>
-    </Stack>
-  </Grid>
-)}
+          {hostedByMe && (
+            <Grid item xs={12} mt={1} textAlign="center">
+              <Stack direction="row" spacing={2} justifyContent="center">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() =>
+                    navigate("/create", {
+                      state: {
+                        game: {
+                          ...g,
+                          skill: g.skill?.toLowerCase(),
+                          limit: g.maxPlayers?.toString(),
+                        },
+                      },
+                    })
+                  }
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => {
+                  const confirmDelete = window.confirm("Are you sure you want to delete this game?");
+                  if (confirmDelete) {
+                    const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
+                    const updatedGames = storedGames.filter((game) => game.id !== g.id);
+                    localStorage.setItem("mygames", JSON.stringify(updatedGames));
+                    alert("Game deleted!");
+                    window.location.reload();
+                  }
+                }}
 
+                >
+                  Delete
+                </Button>
+              </Stack>
+            </Grid>
+          )}
 
           {/* Universal Details Button */}
           <Grid item xs={12} mt={1} textAlign="center">

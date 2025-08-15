@@ -59,7 +59,7 @@ function CreateGame() {
       alert("Game created");
     }
 
-    navigate("/mygames");
+    navigate("/mygames", { state: { gameJustEdited: true } });
   };
 
   return (
