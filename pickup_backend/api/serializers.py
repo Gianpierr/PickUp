@@ -61,7 +61,12 @@ class GameSerializer(serializers.ModelSerializer):
     participants = serializers.SerializerMethodField()
     host = serializers.CharField(source='organizer.username', read_only=True)  # Show host username
     date = serializers.DateTimeField(write_only=True, required=True)
-    sport = serializers.CharField(read_only=True) #Show Sport Name
+
+    # Use sport name for both read/write
+    sport = serializers.SlugRelatedField(
+    slug_field='name',  # Match on Sport.name
+    queryset=Sport.objects.all()    # Enables write via sport name 
+)
 
 
     class Meta:

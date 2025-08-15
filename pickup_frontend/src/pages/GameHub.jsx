@@ -40,10 +40,17 @@ function GameHub() {
   const [selectedSkill, setSelectedSkill] = useState("All");
 
   const filteredGames = games.filter((game) => {
-    const matchesSport = selectedSport === "All" || game.sport === selectedSport;
-    const matchesSkill = selectedSkill === "All" || game.skill_level === selectedSkill;
-    return matchesSport && matchesSkill;
-  });
+  const matchesSport =
+    selectedSport === "All" ||
+    game.sport?.toLowerCase() === selectedSport.toLowerCase();
+
+  const matchesSkill =
+    selectedSkill === "All" ||
+    game.skill_level?.toLowerCase() === selectedSkill.toLowerCase();
+
+  return matchesSport && matchesSkill;
+});
+
 
   // Ensure user is logged in
   useEffect(() => {
