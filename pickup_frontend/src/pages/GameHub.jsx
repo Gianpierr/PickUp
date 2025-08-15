@@ -41,8 +41,7 @@ function GameHub() {
 
   const filteredGames = games.filter((game) => {
     const matchesSport = selectedSport === "All" || game.sport === selectedSport;
-    const matchesSkill =
-      selectedSkill === "All" || game.skill === selectedSkill;
+    const matchesSkill = selectedSkill === "All" || game.skill_level === selectedSkill;
     return matchesSport && matchesSkill;
   });
 
@@ -219,9 +218,9 @@ function GameHub() {
       onChange={(e) => setSelectedSkill(e.target.value)}
     >
       <MenuItem value="All">All</MenuItem>
-      <MenuItem value="Beginner">Beginner</MenuItem>
-      <MenuItem value="Intermediate">Intermediate</MenuItem>
-      <MenuItem value="Advanced">Advanced</MenuItem>
+      <MenuItem value="beginner">Beginner</MenuItem>
+      <MenuItem value="intermediate">Intermediate</MenuItem>
+      <MenuItem value="advanced">Advanced</MenuItem>
     </Select>
   </FormControl>
 </Box>
@@ -269,7 +268,7 @@ function GameHub() {
                 <Typography>📍 {game.location}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>🎯 {game.skill}</Typography>
+                <Typography>🎯 {game.skill_level}</Typography>
               </Grid>
 
               {/* Join & Details buttons */}
