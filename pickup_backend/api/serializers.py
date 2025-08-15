@@ -61,7 +61,7 @@ class GameSerializer(serializers.ModelSerializer):
     participants = serializers.SerializerMethodField()
     host = serializers.CharField(source='organizer.username', read_only=True)  # Show host username
     date = serializers.DateTimeField(write_only=True, required=True)
-    sport = serializers.CharField(write_only=True)
+    sport = serializers.CharField(read_only=True) #Show Sport Name
 
 
     class Meta:
