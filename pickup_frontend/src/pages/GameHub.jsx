@@ -159,7 +159,7 @@ function GameHub() {
       {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <IconButton onClick={toggleDrawer(true)}>
-          <Avatar sx={{ bgcolor: deepPurple[500], width: 40, height: 40, fontSize: 18 }}>U</Avatar>
+          <Avatar sx={{ bgcolor: deepPurple[500], width: 40, height: 40, fontSize: 18 }}></Avatar>
         </IconButton>
         <Typography variant="h4" gutterBottom>
           GameHub
