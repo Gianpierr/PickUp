@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Typography, FormControl, InputLabel, Select, MenuItem, TextField, Button, Snackbar, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 const mockPlayers = [
@@ -13,15 +14,22 @@ function Report(){
     const [selectedPlayer, setSelectedPlayer] = React.useState('');
     const [description, setDescription] = React.useState('');
     const[snackOpen, setSnackOpen] = React.useState(false);
-    const[players, setPlayers] = React.useState(mockPlayers); //This uses the hardcoded names until backended is added in. 
+    const[players, setPlayers] = React.useState(mockPlayers); //This uses the hardcoded names until backended is added in.
+    const navigate = useNavigate();
+ 
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        //backend
-        setSelectedPlayer('');
-        setDescription('');
-        setSnackOpen(true);
-    };
+    e.preventDefault();
+    //backend
+    setSelectedPlayer('');
+    setDescription('');
+    setSnackOpen(true);
+
+    //  Navigate to GameHub after hitting submit
+    setTimeout(() => {
+      navigate('/gamehub');
+    }, 1500);
+  };
 
     const handleSnackbarClose = (event, reason) => {
         if (reason === 'clickaway') return;
