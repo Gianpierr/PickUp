@@ -7,6 +7,7 @@ import SignUp from './pages/signup';
 import CreateGame from './pages/CreateGame';
 import Report from './pages/Report';
 import GameHub from './pages/GameHub';
+import MyGames from './pages/MyGames';
 import './styles/App.css';
 
 /**
@@ -25,7 +26,7 @@ function App() {
       <Routes>
         {/* Default route - login page */}
         <Route 
-          path="/login" 
+          path="/" 
           element={<Login />} 
           // TODO: Redirect to /gamehub if user is already authenticated
         />
@@ -63,6 +64,13 @@ function App() {
           path="/gamehub" 
           element={<GameHub />} 
           // TODO: Fetch list of available games from backend
+        />
+
+        {/* Route for accessing the players created games */}
+        <Route
+          path="/mygames"
+          element={<MyGames />}
+          //TODO: Fetch list of games from backend
         />
       </Routes>
     </Router>
