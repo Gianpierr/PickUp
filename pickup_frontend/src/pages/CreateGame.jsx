@@ -48,25 +48,54 @@ function CreateGame() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const payload = { ...formData };
+  try {
+    const payload = { ...formData };
 
-      // This currently only handles creation via backend
-      // For editing the API needs to be patched in here. 
-      await createGameAPI(payload);
+    // Submit to backend
+    await createGameAPI(payload);
 
-      alert(editingGame ? 'Game Updated!' : 'Game Created!');
-      setSuccess('Success!');
-      setError('');
-      setTimeout(() => navigate('/mygames'), 1000);
-    } catch (err) {
-      setError(err.message || 'Submission failed.');
-      setSuccess('');
-      alert('Submission failed.');
+    // Also save to localStorage
+    const localGame = {
+      id: editingGame?.id || Date.now(),
+      gameName: payload.game_name,
+      location: payload.location,
+      date: payload.date,
+      sport: payload.sport,
+      skill: payload.skill_level,
+      limit: parseInt(payload.limit),
+      maxPlayers: parseInt(payload.limit),
+      currentPlayers: editingGame?.currentPlayers ?? 1,
+      host: { id: 1, username: "mauricio" },
+      isJoined: true,
+    };
+
+    const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
+
+    if (editingGame) {
+      // Replace the game in localStorage
+      const updated = storedGames.map((g) =>
+        g.id === editingGame.id ? localGame : g
+      );
+      localStorage.setItem("mygames", JSON.stringify(updated));
+    } else {
+      // Add new game to localStorage
+      storedGames.push(localGame);
+      localStorage.setItem("mygames", JSON.stringify(storedGames));
     }
-  };
+
+    alert(editingGame ? 'Game Updated!' : 'Game Created!');
+    setSuccess('Success!');
+    setError('');
+    setTimeout(() => navigate('/mygames', { state: { gameJustEdited: true } }), 1000);
+  } catch (err) {
+    setError(err.message || 'Submission failed.');
+    setSuccess('');
+    alert('Submission failed.');
+  }
+};
+
 
   return (
     <Container maxWidth="md">
