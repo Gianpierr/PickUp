@@ -27,6 +27,7 @@ import {
   InputLabel
 } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
+import api from '../api/axiosConfig';
 
 function GameHub() {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ function GameHub() {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("You must be logged in to access the Game Hub.");
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate]);
 
@@ -84,7 +85,7 @@ function GameHub() {
   };
 
   // Join game
-  const handleJoin = (gameId, index) => {
+  const handleJoin = async (gameId, index) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -92,34 +93,18 @@ function GameHub() {
       return;
     }
 
-    axios
-      .post(
-        "http://127.0.0.1:8000/participations/",
-        { game_id: gameId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then(() => {
-        console.log("Join request succeeded");
-        setJoinedGames((prev) => [...prev, index]);
-        alert("Successfully joined the game!");
-      })
-      .catch((err) => {
-        console.error(
-          "Error joining game:",
-          err.response ? err.response.data : err.message
-        );
-        alert(
-          `Could not join game: ${
-            err.response?.data?.detail || err.message
-          }`
-        );
-      });
-  };
+    try {
+      await api.post('/participations/', { game_id: gameId });
+      
+      console.log("Join request succeeded");
+      setJoinedGames((prev) => [...prev, index]);
+      alert("Successfully joined the game!");
+      
+    } catch (err) {
+      console.error("Error joining game:", err.response ? err.response.data : err.message);
+      alert(`Could not join game: ${err.response?.data?.detail || err.message}`);
+    }
+};
 
   // Show game details
   const handleDetails = (game) => {

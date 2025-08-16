@@ -118,6 +118,8 @@ class ParticipationSerializer(serializers.ModelSerializer):
         queryset=Game.objects.all(), source="game", write_only=True
     )
 
+    
+
     class Meta:
         model = Participation
         fields = ['id', 'player', 'game', 'game_id']

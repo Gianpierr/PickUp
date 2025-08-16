@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets, generics, filters
+from rest_framework import status, viewsets, filters
 from .serializers import (
     SignupSerializer,
     SportSerializer,
@@ -12,7 +12,8 @@ from .serializers import (
 from .models import Sport, Game, Participation, Profile
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication 
 
 
 class SignupView(APIView):
@@ -60,6 +61,9 @@ class ParticipationViewSet(viewsets.ModelViewSet):
 
     queryset = Participation.objects.all()
     serializer_class = ParticipationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
 
     def create(self, request, *args, **kwargs):
         """
