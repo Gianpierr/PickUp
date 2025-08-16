@@ -23,38 +23,38 @@ import axios from "axios"; // for backend
 
 
 // ----- DEMO DATA (replace later with backend API results) -----
-const ME = { id: 1, username: "mauricio" }; // current logged-in user
+const ME = { id: 1, username: "gterry@unomaha.edu" }; // current logged-in user
 
-// const initialDemoGames = [
-//   {
-//     id: 101,
-//     gameName: "Evening Hoops",
-//     sport: "Basketball",
-//     date: "Thu, Aug 14",
-//     time: "6:00 PM – 7:30 PM",
-//     location: "Campus Rec Court 2",
-//     currentPlayers: 7,
-//     maxPlayers: 10,
-//     skill: "Intermediate",
-//     host: { id: 1, username: "mauricio" },
-//   },
-//   {
-//     id: 102,
-//     gameName: "Friday Night Soccer",
-//     sport: "Soccer",
-//     date: "Fri, Aug 15",
-//     time: "5:00 PM – 6:30 PM",
-//     location: "Trago Field",
-//     currentPlayers: 10,
-//     maxPlayers: 10,
-//     skill: "Advanced",
-//     host: { id: 3, username: "alex" },
-//     isJoined: true,
-//   },
-// ];
+const initialDemoGames = [
+  {
+    id: 101,
+    gameName: "Evening Hoops",
+    sport: "Basketball",
+    date: "Thu, Aug 14",
+    time: "6:00 PM – 7:30 PM",
+    location: "Campus Rec Court 2",
+    currentPlayers: 7,
+    maxPlayers: 10,
+    skill: "Intermediate",
+    host: { id: 1, username: "mauricio" },
+  },
+  {
+    id: 102,
+    gameName: "Friday Night Soccer",
+    sport: "Soccer",
+    date: "Fri, Aug 15",
+    time: "5:00 PM – 6:30 PM",
+    location: "Trago Field",
+    currentPlayers: 10,
+    maxPlayers: 10,
+    skill: "Advanced",
+    host: { id: 3, username: "alex" },
+    isJoined: true,
+  },
+];
 
-// const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
-// const demoGames = storedGames.length > 0 ? storedGames : initialDemoGames;
+const storedGames = JSON.parse(localStorage.getItem("mygames") || "[]");
+const demoGames = storedGames.length > 0 ? storedGames : initialDemoGames;
 
 const isHostedByMe = (g) => g.host?.id === ME.id || g.host?.username === ME.username;
 const isJoinedByMe = (g) => !!g.isJoined || isHostedByMe(g);
@@ -62,9 +62,10 @@ const isJoinedByMe = (g) => !!g.isJoined || isHostedByMe(g);
 export default function MyGames() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [games, setGames] = useState(() =>
-    JSON.parse(localStorage.getItem("mygames") || "[]")
-  );
+  const [games, setGames] = useState(demoGames);
+  // const [games, setGames] = useState(() =>
+  //   JSON.parse(localStorage.getItem("mygames") || "[]")
+  // );
   const [tab, setTab] = useState(0); // 0 = All, 1 = Joined, 2 = Hosting
 
   // Update game list when redirected after edit
