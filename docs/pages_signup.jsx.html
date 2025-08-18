@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/signup.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/signup.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import { TextField, Button, Container, Typography, Box, MenuItem } from '@mui/material';
+import { signupAPI } from '../api/signupAPI';
+import { useNavigate } from 'react-router-dom';
+
+/**
+ * SignUp Component
+ * ----------------
+ * Signup form where `email` is automatically used as the `username`.
+ */
+function SignUp() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    birthday: '',
+    skill_level: '',
+    gender: '',
+    email: '',
+    password: '',
+  });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // Handle field changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Automatically map email to username
+      const payload = { ...formData, username: formData.email };
+      const response = await signupAPI(payload);
+      
+      setSuccess('Signup successful! You may now log in.');
+      setError('');
+      console.log('Signup Response:', response);
+      setTimeout(() => navigate('/login'), 1500);
+
+      // TODO: Redirect to login page after signup
+    } catch (err) {
+      setError(err.message || 'Signup failed. Please check your details and try again.');
+      setSuccess('');
+      console.error('Signup Error:', err);
+    }
+  };
+
+  return (
+    &lt;Container maxWidth="xs">
+      &lt;Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      >
+        &lt;Typography component="h1" variant="h5">
+          Sign Up
+        &lt;/Typography>
+
+        {error &amp;&amp; &lt;Typography color="error">{error}&lt;/Typography>}
+        {success &amp;&amp; &lt;Typography color="primary">{success}&lt;/Typography>}
+
+        &lt;TextField margin="normal" required fullWidth label="First Name" name="first_name" onChange={handleChange} />
+        &lt;TextField margin="normal" required fullWidth label="Last Name" name="last_name" onChange={handleChange} />
+        &lt;TextField
+          margin="normal"
+          required
+          fullWidth
+          label="Birthday"
+          name="birthday"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          onChange={handleChange}
+        />
+        &lt;TextField margin="normal" required fullWidth select label="Gender" name="gender" onChange={handleChange}>
+          &lt;MenuItem value="">Select&lt;/MenuItem>
+          &lt;MenuItem value="male">Male&lt;/MenuItem>
+          &lt;MenuItem value="female">Female&lt;/MenuItem>
+          &lt;MenuItem value="other">Other&lt;/MenuItem>
+          &lt;MenuItem value="prefer_not_to_say">Prefer not to say&lt;/MenuItem>
+        &lt;/TextField>
+        &lt;TextField margin="normal" required fullWidth select label="Skill Level" name="skill_level" onChange={handleChange}>
+          &lt;MenuItem value="">Select&lt;/MenuItem>
+          &lt;MenuItem value="beginner">Beginner&lt;/MenuItem>
+          &lt;MenuItem value="intermediate">Intermediate&lt;/MenuItem>
+          &lt;MenuItem value="advanced">Advanced&lt;/MenuItem>
+          
+        &lt;/TextField>
+        
+        &lt;TextField margin="normal" required fullWidth label="Email Address" name="email" onChange={handleChange} />
+        &lt;TextField
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          onChange={handleChange}
+        />
+
+        &lt;Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          Register
+        &lt;/Button>
+      &lt;/Box>
+    &lt;/Container>
+  );
+}
+
+export default SignUp;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#BASE_URL">BASE_URL</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#signupAPI">signupAPI</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Aug 18 2025 17:48:19 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
